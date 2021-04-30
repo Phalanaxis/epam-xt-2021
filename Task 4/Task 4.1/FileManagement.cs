@@ -90,33 +90,24 @@ namespace Task_4._1
 
         private void Log_update(string path, int action, String date)
         {
-            switch (action)
+            using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
             {
-                case 1:
-                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-                    {
+                switch (action)
+                {
+                    case 1:
                         sw.WriteLine($"{date}---Изменен---{path}");
-                    }
-                    return;
-                case 2:
-                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-                    {
+                        return;
+                    case 2:
                         sw.WriteLine($"{date}---Переименован---{path}");
-                    }
-                    return;
-                case 3:
-                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-                    {
+                        return;
+                    case 3:
                         sw.WriteLine($"{date}---Создан---{path}");
-                    }
-                    return;
-                case 4:
-                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-                    {
+                        return;
+                    case 4:
                         sw.WriteLine($"{date}---Удален---{path}");
-                    }
-                    return;
-            }
+                        return;
+                }
+            }   
         }
 
 
