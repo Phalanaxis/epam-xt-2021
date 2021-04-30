@@ -7,9 +7,9 @@ namespace Task_4._1
     {
         static void Main()
         {
-            var Initial = new FileManagement();
+            var file_manager = new FileManagement();
 
-            Initial.Catalogue_Create();
+            file_manager.Catalogue_Create();
 
             Console.WriteLine("Какой из режимов вы желаете включить:    ");
             Console.WriteLine("1: режим наблюдения;");
@@ -23,12 +23,14 @@ namespace Task_4._1
                 case 1:
                     Console.WriteLine("Включен режим наблюдения");
 
-                    Initial.Observer();
+                    file_manager.Observer();
                     while(Console.ReadKey().Key != ConsoleKey.Escape);
-                    break;
+                    return;
                 case 2:
                     Console.WriteLine("Включен режим отката изменений");
-                    Initial.Date_Time_Input();
+                    file_manager.Roll_Back_Start();
+                    return;
+                case 3:
                     break;
                 default:
                     return;

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using Microsoft.VisualBasic.FileIO;
 using System.Globalization;
-using System.Text.RegularExpressions;
+
 
 namespace Task_4._1
 {
@@ -9,7 +10,7 @@ namespace Task_4._1
     {
         public static readonly string Path_to_Catalogue = "C:/Task_4/Task_Catalogue";
         public static readonly string Path_to_Backup_Catalogue = "C:/Task_4/Task_Backup_Catalogue";
-        public static readonly string Path_to_Log = "C:/Task_4/Task_Log";
+        public static readonly string Path_to_Log = "C:/Task_4";
 
         public void Catalogue_Create()
         {
@@ -37,120 +38,125 @@ namespace Task_4._1
 
             watcher.Filter = "*.txt";
 
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnCreated);
-            watcher.Deleted += new FileSystemEventHandler(OnDeleted);
-            watcher.Renamed += new RenamedEventHandler(OnRenamed);
+            watcher.Changed += OnChanged;
+            watcher.Created += OnCreated;
+            watcher.Deleted += OnDeleted;
+            watcher.Renamed += OnRenamed;
 
             watcher.IncludeSubdirectories = true;
             watcher.EnableRaisingEvents = true; 
         }
 
+
         private void OnChanged(object sourse, FileSystemEventArgs e)
         {
-            DateTime date = DateTime.Now;
+            string date = DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss");
+            Backup_Creation(date);
 
-            Console.WriteLine($"Файл {e.Name} изменен");
-
-            string New_Path = $"{Path_to_Backup_Catalogue}\\{Path.GetFileName(e.FullPath)}";
-
-            int i = 1;
-
-            do
-            {
-                New_Path = $"{Path_to_Backup_Catalogue}\\\\{Path.GetFileNameWithoutExtension(e.FullPath)}({i}){Path.GetExtension(e.FullPath)}";
-                i = i + 1;
-            }
-            while (File.Exists(New_Path));
-
-            File.Copy(e.FullPath, New_Path);
-
-            using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-            {
-                sw.WriteLine($"{date}---Изменен---{e.FullPath}");
-            }
-
+            Log_update(e.FullPath, 1, date);
         }
 
-        static void OnRenamed(object sourse, RenamedEventArgs e)
+        private void OnRenamed(object sourse, RenamedEventArgs e)
         {
-            DateTime date = DateTime.Now;
+            string date = DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss");
+            Backup_Creation(date);
 
-            Console.WriteLine($"Файл {e.OldName} переименован в {e.Name}");
-
-            string New_Path = $"{Path_to_Backup_Catalogue}\\{Path.GetFileName(e.FullPath)}";
-            File.Copy(e.FullPath, New_Path);
-
-            Console.WriteLine(New_Path);
-
-            using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-            {
-                sw.WriteLine($"{date}---Переименован---{e.OldFullPath}---{New_Path}");
-            }
+            Log_update(e.FullPath, 2, date);
         }
 
-        static void OnCreated(object sourse, FileSystemEventArgs e)
+        private void OnCreated(object sourse, FileSystemEventArgs e)
         {
-            DateTime date = DateTime.Now;
+            string date = DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss");
+            Backup_Creation(date);
 
-            string New_Path = $"{Path_to_Backup_Catalogue}\\{Path.GetFileName(e.FullPath)}";
-            File.Copy(e.FullPath, New_Path);
-
-            Console.WriteLine($"Создание файла {e.Name}");
-            using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-            {
-                sw.WriteLine($"{date}---Создан---{e.FullPath}");
-            }
+            Log_update(e.FullPath, 3, date);
         }
 
-        static void OnDeleted(object sourse, FileSystemEventArgs e)
+        private void OnDeleted(object sourse, FileSystemEventArgs e)
         {
-            DateTime date = DateTime.Now;
+            string date = DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss");
+            Backup_Creation(date);
 
-            Console.WriteLine($"Удаление файла {e.Name}");
-            using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
-            {
-                sw.WriteLine($"{date}---Удален---{e.FullPath}");
-            }
+            Log_update(e.FullPath, 4, date);
+        }
+
+        private void Backup_Creation(string date)
+        {
+            string New_Path = $"{Path_to_Backup_Catalogue}\\\\{date}";
+            Directory.CreateDirectory(New_Path);
+            FileSystem.CopyDirectory(Path_to_Catalogue, New_Path);
         }
 
 
-        public void Date_Time_Input()
+        private void Log_update(string path, int action, String date)
         {
-            Console.WriteLine("Введите дату в формате 'дд.ММ.гггг чч:мм:сс':    ");
-            DateTime.TryParse(Console.ReadLine(), out DateTime input);
+            switch (action)
+            {
+                case 1:
+                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
+                    {
+                        sw.WriteLine($"{date}---Изменен---{path}");
+                    }
+                    return;
+                case 2:
+                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
+                    {
+                        sw.WriteLine($"{date}---Переименован---{path}");
+                    }
+                    return;
+                case 3:
+                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
+                    {
+                        sw.WriteLine($"{date}---Создан---{path}");
+                    }
+                    return;
+                case 4:
+                    using (StreamWriter sw = new StreamWriter($"{Path_to_Log}\\Log.txt", true))
+                    {
+                        sw.WriteLine($"{date}---Удален---{path}");
+                    }
+                    return;
+            }
+        }
+
+
+        public void Roll_Back_Start()
+        {
+            Console.WriteLine("Сохраненные точки востановления:    ");
+            Get_Directories();
+
+            Console.WriteLine("Введите дату в формате 'дд.ММ.гггг_чч.мм.сс':    ");
+            string input = Console.ReadLine();
+            
             Roll_back(input);
         }
 
-
-
-        static void Roll_back(DateTime input)
+        private void Get_Directories()
         {
-            string[] Log_File = File.ReadAllLines($"{Path_to_Log}\\Log.txt");
-            
-            foreach(string str in Log_File)
+            string[] files = Directory.GetDirectories($"{Path_to_Backup_Catalogue}");
+            for (int i = 0; i < files.Length; i++)
             {
-                if(!string.IsNullOrEmpty(str))
-                {
-                    var date = DateTime.ParseExact(str.Substring(0, 19), "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-
-                    if(input == date)
-                    {
-                        string Path = str.Substring(str.LastIndexOf("---") + 3);
-                        Console.WriteLine(str);
-                        Console.WriteLine(Path);
-
-                       
-
-                    }
-
-                    //var Content = str.Split("---");
-                    
-
-                }
-
+                Console.WriteLine(files[i]);
             }
+        }
 
+
+        public void Roll_back(string input)
+        {
+            string path = $"{Path_to_Backup_Catalogue}\\\\{input}";
+
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(Path_to_Catalogue);
+                Directory.CreateDirectory(Path_to_Catalogue);
+
+                DirectoryInfo dir = new DirectoryInfo(path);
+
+                foreach (FileInfo file in dir.GetFiles())
+                {
+                    file.CopyTo(Path.Combine(Path_to_Catalogue, file.Name), true);
+                }
+            }
         }
     }
 }
