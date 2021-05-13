@@ -11,11 +11,10 @@ namespace Task_4._1
 
             file_manager.Catalogue_Create();
 
-            Console.WriteLine("Какой из режимов вы желаете включить:    ");
-            Console.WriteLine("1: режим наблюдения;");
-            Console.WriteLine("2: режим отката изменений;");
-            Console.WriteLine("3: выход;");
-
+            Console.WriteLine("Какой из режимов вы желаете включить:" + Environment.NewLine +
+                "1: режим наблюдения;" + Environment.NewLine + "2: режим отката изменений;" + Environment.NewLine +
+                "3: Выход;");
+            
             int.TryParse(Console.ReadLine(), out int caseSwitch);
 
             switch (caseSwitch)
