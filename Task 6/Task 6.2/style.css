@@ -1,0 +1,52 @@
+.registration_form{
+    box-sizing: border-box;
+    width: 400px;
+    background-color:rgb(11, 134, 248);
+    color: white;
+    display: inline-block;
+    border: 3px solid #01669c9f;
+}
+
+h2{
+    margin: 10px;
+}
+
+.registration_form_input{
+    margin: 15px 15px 15px 15px;
+    display: inherit;  
+}
+
+.registration_form_input .email_input{
+    display: flex;
+    flex-direction: column;
+    margin: 15px 5px 15px 0;
+}
+
+.registration_form_input .email_input input{
+    width: 100%;
+}
+
+.registration_form_input .password_input{
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 5px 15px 0;
+}
+
+.registration_form_input .password_input input{
+    width: 100%;
+}
+
+.registration_form_input .password_input div{
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+button{
+    background-color: rgb(252, 193, 84);
+    display: block;
+    margin-top: 20px;
+    padding: 5px;
+    border: none;
+}

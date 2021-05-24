@@ -1,0 +1,23 @@
+.menu{
+    box-sizing: border-box;
+    width: 200px;
+    height: auto;
+    background-color:rgb(253, 234, 123);;
+    border-radius: 10px;
+    border:1px solid black;
+    box-shadow: 5px 5px 0 0 brown;
+}
+
+.menu ul{
+    list-style: none;
+    color: brown;
+    padding-left: 10px;
+    padding-right: 15px;
+    line-height: 1.7;
+    margin-top: 10px;
+}
+
+.menu ul li{
+    font-size: 14px;
+    font-weight:500;
+}
